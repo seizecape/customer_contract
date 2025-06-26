@@ -12,7 +12,7 @@ import utils
 from initialize import initialize
 import components as cn
 import constants as ct
-
+from langchain_community.document_loaders import PyMuPDFLoader
 
 ############################################################
 # 設定関連

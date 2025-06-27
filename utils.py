@@ -36,6 +36,7 @@ from langchain_community.utilities import SerpAPIWrapper
 import datetime
 import constants as ct
 
+print("SERPAPI_API_KEY:", os.getenv("SERPAPI_API_KEY"))
 
 ############################################################
 # 設定関連

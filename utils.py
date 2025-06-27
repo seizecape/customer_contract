@@ -29,7 +29,10 @@ from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers import EnsembleRetriever
 from docx import Document
 from langchain.output_parsers import CommaSeparatedListOutputParser
-from langchain import LLMChain
+from langchain.chains import LLMChain
+from langchain_community.utilities import SerpAPIWrapper
+
+
 import datetime
 import constants as ct
 

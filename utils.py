@@ -16,7 +16,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
 from langchain.schema import HumanMessage, AIMessage
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
@@ -31,6 +31,7 @@ from docx import Document
 from langchain.output_parsers import CommaSeparatedListOutputParser
 from langchain.chains import LLMChain
 from langchain_community.utilities import SerpAPIWrapper
+
 
 
 import datetime
@@ -103,11 +104,23 @@ def create_rag_chain(db_name):
     embeddings = OpenAIEmbeddings()
 
     # すでに対象のデータベースが作成済みの場合は読み込み、未作成の場合は新規作成する
-    if os.path.isdir(db_name):
-        db = Chroma(persist_directory=".db", embedding_function=embeddings)
-    else:
-        db = Chroma.from_documents(splitted_docs, embedding=embeddings, persist_directory=".db")
+    #if os.path.isdir(db_name):
+    #    db = Chroma(persist_directory=".db", embedding_function=embeddings)
+    #else:
+    #    db = Chroma.from_documents(splitted_docs, embedding=embeddings, persist_directory=".db")
+    
+    try:
+        # すでに対象のデータベースが作成済みの場合は読み込み、未作成の場合は新規作成する
+        if os.path.isdir(db_name):
+            db = Chroma(persist_directory=".db", embedding_function=embeddings)
+        else:
+            db = Chroma.from_documents(splitted_docs, embedding=embeddings, persist_directory=".db")
+    except Exception as e:
+        st.error(f"Chroma 初期化時にエラーが発生しました: {e}")
+        return None  # 以降の処理が進まないよう中断
+
     retriever = db.as_retriever(search_kwargs={"k": ct.TOP_K})
+
 
     question_generator_template = ct.SYSTEM_PROMPT_CREATE_INDEPENDENT_TEXT
     question_generator_prompt = ChatPromptTemplate.from_messages(

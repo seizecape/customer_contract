@@ -20,6 +20,27 @@ from langchain.agents import AgentType, initialize_agent
 import utils
 import constants as ct
 
+#import os
+#from langchain_community.document_loaders import TextLoader
+#from langchain.text_splitter import CharacterTextSplitter
+#from langchain.embeddings.openai import OpenAIEmbeddings
+#from langchain.vectorstores import Chroma
+#from dotenv import load_dotenv
+
+#load_dotenv()
+
+# ドキュメントの読み込み
+#loader = TextLoader("./docs/sample.txt")  # ←あなたの手持ちファイルに変更OK
+#documents = loader.load()
+
+# テキストをチャンクに分割
+#text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+#texts = text_splitter.split_documents(documents)
+
+# ベクトルDBの作成
+#embeddings = OpenAIEmbeddings()
+#Chroma.from_documents(texts, embeddings, persist_directory="./.db_customer")  # ←目的のパスに保存
+
 
 
 ############################################################
@@ -110,6 +131,19 @@ def initialize_agent_executor():
     if "agent_executor" in st.session_state:
         return
     
+ # ← ここに追記
+    st.write("DB_CUSTOMER_PATH:", ct.DB_CUSTOMER_PATH)
+    st.write("DB_SERVICE_PATH:", ct.DB_SERVICE_PATH)
+    st.write("DB_COMPANY_PATH:", ct.DB_COMPANY_PATH)
+    st.write("DB_ALL_PATH:", ct.DB_ALL_PATH)
+
+    # さらにファイル・フォルダが本当に存在するかも表示
+    import os
+    st.write("customer exists:", os.path.exists(ct.DB_CUSTOMER_PATH))
+    st.write("service exists:", os.path.exists(ct.DB_SERVICE_PATH))
+    st.write("company exists:", os.path.exists(ct.DB_COMPANY_PATH))
+    st.write("all exists:", os.path.exists(ct.DB_ALL_PATH))
+
     # 消費トークン数カウント用のオブジェクトを用意
     st.session_state.enc = tiktoken.get_encoding(ct.ENCODING_KIND)
     
